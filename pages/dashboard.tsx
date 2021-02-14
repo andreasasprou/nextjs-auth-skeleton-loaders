@@ -1,7 +1,6 @@
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { Layout } from '@/components/Layout';
 import { ROUTES } from '@/lib/constants';
-import { useRedirectUser } from '@/lib/hooks/useRedirectUser';
 import { useUser } from '@/lib/hooks/useUser';
 import { CustomPage } from '@/lib/types';
 
@@ -9,11 +8,6 @@ const githubUrl = (username: string) =>
   `https://api.github.com/users/${username}`;
 
 const DashboardPage: CustomPage = () => {
-  useRedirectUser({
-    redirectTo: ROUTES.Login,
-    redirectIf: (user) => !user.isLoggedIn,
-  });
-
   const { user } = useUser();
 
   return (
@@ -39,5 +33,6 @@ const DashboardPage: CustomPage = () => {
 };
 
 DashboardPage.skeletonLoader = <DashboardSkeleton />;
+DashboardPage.redirectUnAuthenticatedTo = ROUTES.Login;
 
 export default DashboardPage;

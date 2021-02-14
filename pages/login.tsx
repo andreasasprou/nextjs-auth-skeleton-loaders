@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { Layout } from '@/components/Layout';
 import { LoginForm } from '@/components/LoginForm';
 import { ROUTES } from '@/lib/constants';
-import { useRedirectUser } from '@/lib/hooks/useRedirectUser';
 import { CustomPage } from '@/lib/types';
 
 function useRedirectToAfterLogin() {
@@ -17,11 +16,6 @@ function useRedirectToAfterLogin() {
 }
 
 const LoginPage: CustomPage = () => {
-  useRedirectUser({
-    redirectTo: ROUTES.Dashboard,
-    redirectIf: (user) => Boolean(user.isLoggedIn),
-  });
-
   const router = useRouter();
   const redirectTo = useRedirectToAfterLogin();
 
@@ -46,5 +40,7 @@ const LoginPage: CustomPage = () => {
     </Layout>
   );
 };
+
+LoginPage.redirectAuthenticatedTo = ROUTES.Dashboard;
 
 export default LoginPage;

@@ -1,16 +1,19 @@
-import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 
+import { WithAuthRedirect } from '@/components/WithAuthRedirect';
 import { WithSkeletonLoader } from '@/components/WithSkeletonLoader';
 import { fetchJson } from '@/lib/fetchJson';
-import { CustomPage } from '@/lib/types';
-
-interface CustomAppProps extends Omit<AppProps, 'Component'> {
-  Component: CustomPage;
-}
+import { CustomAppProps } from '@/lib/types';
+import { pick } from '@/lib/utils';
 
 function MyApp({ Component, pageProps }: CustomAppProps) {
   const skeletonLoader = Component.skeletonLoader;
+
+  const authRedirect = pick(
+    Component,
+    'redirectAuthenticatedTo',
+    'redirectUnAuthenticatedTo',
+  );
 
   return (
     <SWRConfig
@@ -21,9 +24,11 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
         },
       }}
     >
-      <WithSkeletonLoader skeletonLoader={skeletonLoader}>
-        <Component {...pageProps} />
-      </WithSkeletonLoader>
+      <WithAuthRedirect {...authRedirect}>
+        <WithSkeletonLoader skeletonLoader={skeletonLoader}>
+          <Component {...pageProps} />
+        </WithSkeletonLoader>
+      </WithAuthRedirect>
     </SWRConfig>
   );
 }
