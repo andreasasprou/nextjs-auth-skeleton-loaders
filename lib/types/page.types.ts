@@ -1,3 +1,6 @@
 import { NextPage } from 'next';
+import { ReactNode } from 'react';
 
-export type CustomPage = NextPage & {};
+export type CustomPage = NextPage & {
+  skeletonLoader?: ReactNode;
+};

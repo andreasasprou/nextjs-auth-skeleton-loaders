@@ -1,4 +1,7 @@
+import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { Layout } from '@/components/Layout';
+import { ROUTES } from '@/lib/constants';
+import { useRedirectUser } from '@/lib/hooks/useRedirectUser';
 import { useUser } from '@/lib/hooks/useUser';
 import { CustomPage } from '@/lib/types';
 
@@ -6,11 +9,12 @@ const githubUrl = (username: string) =>
   `https://api.github.com/users/${username}`;
 
 const DashboardPage: CustomPage = () => {
-  const { user, isLoading } = useUser();
+  useRedirectUser({
+    redirectTo: ROUTES.Login,
+    redirectIf: (user) => !user.isLoggedIn,
+  });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { user } = useUser();
 
   return (
     <Layout>
@@ -26,12 +30,14 @@ const DashboardPage: CustomPage = () => {
 
       <p style={{ fontStyle: 'italic' }}>
         Public data, from{' '}
-        <a href={githubUrl(user.username)}>{githubUrl(user.username)}</a>,
+        <a href={githubUrl(user?.username)}>{githubUrl(user?.username)}</a>,
         reduced to `username` and `avatar_url`.
       </p>
       <pre>{JSON.stringify(user, null, 2)}</pre>
     </Layout>
   );
 };
+
+DashboardPage.skeletonLoader = <DashboardSkeleton />;
 
 export default DashboardPage;

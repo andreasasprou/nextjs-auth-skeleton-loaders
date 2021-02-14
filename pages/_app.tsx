@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 
+import { WithSkeletonLoader } from '@/components/WithSkeletonLoader';
 import { fetchJson } from '@/lib/fetchJson';
 import { CustomPage } from '@/lib/types';
 
@@ -9,6 +10,8 @@ interface CustomAppProps extends Omit<AppProps, 'Component'> {
 }
 
 function MyApp({ Component, pageProps }: CustomAppProps) {
+  const skeletonLoader = Component.skeletonLoader;
+
   return (
     <SWRConfig
       value={{
@@ -18,7 +21,9 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
         },
       }}
     >
-      <Component {...pageProps} />
+      <WithSkeletonLoader skeletonLoader={skeletonLoader}>
+        <Component {...pageProps} />
+      </WithSkeletonLoader>
     </SWRConfig>
   );
 }
