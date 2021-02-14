@@ -6,6 +6,7 @@ export type CustomPage = NextPage & {
   skeletonLoader?: ReactNode;
   redirectAuthenticatedTo?: string;
   redirectUnAuthenticatedTo?: string;
+  suppressFirstRenderFlicker?: boolean;
   getLayout?: (component: JSX.Element) => JSX.Element;
 };
 

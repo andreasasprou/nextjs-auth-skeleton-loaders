@@ -8,5 +8,6 @@ const HomePage: CustomPage = () => (
 );
 
 HomePage.getLayout = (page) => <WebLayout>{page}</WebLayout>;
+HomePage.suppressFirstRenderFlicker = true;
 
 export default HomePage;

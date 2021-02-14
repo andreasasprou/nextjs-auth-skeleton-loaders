@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { ClientConstants } from '@/lib/constants';
 import { CustomPage } from '@/lib/types';
+
+import { NO_PAGE_FLICKER_CLASSNAME, NoPageFlicker } from './NoPageFlicker';
 
 const hasAuthCookie = () => {
   return document.cookie?.indexOf(ClientConstants.AuthCookieName) !== -1;
@@ -10,7 +12,9 @@ const hasAuthCookie = () => {
 interface AppRedirectProps
   extends Pick<
     CustomPage,
-    'redirectAuthenticatedTo' | 'redirectUnAuthenticatedTo'
+    | 'redirectAuthenticatedTo'
+    | 'redirectUnAuthenticatedTo'
+    | 'suppressFirstRenderFlicker'
   > {}
 
 const handleAuthRedirect = ({
@@ -34,9 +38,23 @@ const handleAuthRedirect = ({
 
 export function WithAuthRedirect({
   children,
-  ...rest
+  ...props
 }: React.PropsWithChildren<AppRedirectProps>) {
-  handleAuthRedirect(rest);
+  handleAuthRedirect(props);
 
-  return <>{children}</>;
+  const noPageFlicker =
+    props.suppressFirstRenderFlicker ||
+    props.redirectUnAuthenticatedTo ||
+    props.redirectAuthenticatedTo;
+
+  useEffect(() => {
+    document.documentElement.classList.add(NO_PAGE_FLICKER_CLASSNAME);
+  }, []);
+
+  return (
+    <>
+      {noPageFlicker && <NoPageFlicker />}
+      {children}
+    </>
+  );
 }

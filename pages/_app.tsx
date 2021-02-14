@@ -17,6 +17,7 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
     Component,
     'redirectAuthenticatedTo',
     'redirectUnAuthenticatedTo',
+    'suppressFirstRenderFlicker',
   );
 
   return (
