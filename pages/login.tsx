@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
-import { Layout } from '@/components/Layout';
 import { LoginForm } from '@/components/LoginForm';
+import { WebLayout } from '@/layouts/WebLayout';
 import { ROUTES } from '@/lib/constants';
 import { CustomPage } from '@/lib/types';
 
@@ -24,23 +24,13 @@ const LoginPage: CustomPage = () => {
   };
 
   return (
-    <Layout>
-      <div className="login">
-        <LoginForm onSuccess={handleSuccess} />
-      </div>
-      <style jsx>{`
-        .login {
-          max-width: 21rem;
-          margin: 0 auto;
-          padding: 1rem;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-      `}</style>
-    </Layout>
+    <>
+      <LoginForm onSuccess={handleSuccess} />
+    </>
   );
 };
 
+LoginPage.getLayout = (page) => <WebLayout>{page}</WebLayout>;
 LoginPage.redirectAuthenticatedTo = ROUTES.Dashboard;
 
 export default LoginPage;

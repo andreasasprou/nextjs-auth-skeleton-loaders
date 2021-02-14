@@ -6,8 +6,12 @@ import { fetchJson } from '@/lib/fetchJson';
 import { CustomAppProps } from '@/lib/types';
 import { pick } from '@/lib/utils';
 
+import 'tailwindcss/tailwind.css';
+import '@/lib/styles.css';
+
 function MyApp({ Component, pageProps }: CustomAppProps) {
   const skeletonLoader = Component.skeletonLoader;
+  const getLayout = Component.getLayout || ((page) => page);
 
   const authRedirect = pick(
     Component,
@@ -26,7 +30,7 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
     >
       <WithAuthRedirect {...authRedirect}>
         <WithSkeletonLoader skeletonLoader={skeletonLoader}>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </WithSkeletonLoader>
       </WithAuthRedirect>
     </SWRConfig>

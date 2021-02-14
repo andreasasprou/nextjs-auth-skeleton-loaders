@@ -19,7 +19,8 @@
     "baseUrl": "./",
     "paths": {
       "@/lib/*": ["lib/*"],
-      "@/components/*": ["components/*"]
+      "@/components/*": ["components/*"],
+      "@/layouts/*": ["layouts/*"]
     }
   },
   "exclude": ["node_modules"],
