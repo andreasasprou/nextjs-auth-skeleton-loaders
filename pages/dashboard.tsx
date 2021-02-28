@@ -17,6 +17,9 @@ DashboardPage.skeletonLoader = (
     <DashboardStats isLoading />
   </AppLayout>
 );
-DashboardPage.redirectUnAuthenticatedTo = ROUTES.Login;
+DashboardPage.authRedirect = {
+  to: ROUTES.Login,
+  if: (user) => !user?.isLoggedIn,
+};
 
 export default DashboardPage;

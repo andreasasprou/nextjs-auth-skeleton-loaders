@@ -1,55 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { ClientConstants } from '@/lib/constants';
+import { useUser } from '@/lib/hooks/useUser';
 import { CustomPage } from '@/lib/types';
 
 import { NO_PAGE_FLICKER_CLASSNAME, NoPageFlicker } from './NoPageFlicker';
 
-const hasAuthCookie = () => {
-  return document.cookie?.indexOf(ClientConstants.AuthCookieName) !== -1;
-};
-
 interface AppRedirectProps
-  extends Pick<
-    CustomPage,
-    | 'redirectAuthenticatedTo'
-    | 'redirectUnAuthenticatedTo'
-    | 'suppressFirstRenderFlicker'
-  > {}
-
-const handleAuthRedirect = ({
-  redirectAuthenticatedTo,
-  redirectUnAuthenticatedTo,
-}: AppRedirectProps) => {
-  if (typeof window === 'undefined') return;
-
-  if (hasAuthCookie()) {
-    if (redirectAuthenticatedTo) {
-      window.location.replace(redirectAuthenticatedTo);
-    }
-  } else {
-    if (redirectUnAuthenticatedTo) {
-      const url = new URL(redirectUnAuthenticatedTo, window.location.href);
-      url.searchParams.append('next', window.location.pathname);
-      window.location.replace(url.toString());
-    }
-  }
-};
+  extends Pick<CustomPage, 'authRedirect' | 'suppressFirstRenderFlicker'> {}
 
 export function WithAuthRedirect({
   children,
-  ...props
+  authRedirect,
+  suppressFirstRenderFlicker,
 }: React.PropsWithChildren<AppRedirectProps>) {
-  handleAuthRedirect(props);
+  const [hasMounted, setHasMounted] = useState(false);
+  const { isLoading, user } = useUser();
 
-  const noPageFlicker =
-    props.suppressFirstRenderFlicker ||
-    props.redirectUnAuthenticatedTo ||
-    props.redirectAuthenticatedTo;
+  const noPageFlicker = suppressFirstRenderFlicker || !!authRedirect;
 
   useEffect(() => {
+    if (isLoading || hasMounted) {
+      return;
+    }
+
+    if (authRedirect && authRedirect.if(user)) {
+      window.location.replace(authRedirect.to);
+      return;
+    }
+
+    setHasMounted(true);
+
     document.documentElement.classList.add(NO_PAGE_FLICKER_CLASSNAME);
-  }, []);
+  }, [authRedirect, hasMounted, isLoading, user]);
 
   return (
     <>

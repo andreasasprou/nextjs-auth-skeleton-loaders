@@ -15,8 +15,7 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
 
   const authRedirect = pick(
     Component,
-    'redirectAuthenticatedTo',
-    'redirectUnAuthenticatedTo',
+    'authRedirect',
     'suppressFirstRenderFlicker',
   );
 

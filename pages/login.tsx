@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { LoginForm } from '@/components/LoginForm';
 import { WebLayout } from '@/layouts/WebLayout';
 import { ROUTES } from '@/lib/constants';
-import { CustomPage } from '@/lib/types';
+import { CustomPage, User } from '@/lib/types';
 
 function useRedirectToAfterLogin() {
   const { next } = useRouter().query;
@@ -31,6 +31,9 @@ const LoginPage: CustomPage = () => {
 };
 
 LoginPage.getLayout = (page) => <WebLayout>{page}</WebLayout>;
-LoginPage.redirectAuthenticatedTo = ROUTES.Dashboard;
+LoginPage.authRedirect = {
+  if: (user) => Boolean(user?.isLoggedIn),
+  to: ROUTES.Dashboard,
+};
 
 export default LoginPage;
